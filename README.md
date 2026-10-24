@@ -355,15 +355,15 @@ Keep this startup call. New home-page functions or calls can be added to this fi
 For example, a separate function can be added as follows:
 
 ```javascript
-function showWelcomeMessage() {
-    console.log("Welcome to JASPY-Web!");
+function showbody() {
+    console.log(document.body.innerHTML);
 }
 
 // Keep the existing JASPY startup call.
 Jaspy();
 
 // Example page-specific behavior.
-showWelcomeMessage();
+showbody();
 ```
 
 This is only an example; it does not replace the current project code. When using a helper such as `create_navigator()`, ensure that its container element exists and pass the required arguments.
