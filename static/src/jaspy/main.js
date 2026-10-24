@@ -392,7 +392,138 @@ async function export_website(file_name = "jaspy-website.html") {
 
     URL.revokeObjectURL(downloadUrl);
 }
+function create_navigator(containerId, brandName, links = []) {
+    const navId = "jaspy-navbar";
+    Create_other_Element(containerId, "nav", "id", navId);
+    Set_Attribut(navId, "style", "display: flex; justify-content: space-between; align-items: center; padding: 15px 30px; background: #2639b8; color: #fff;");
 
+    // Fametrahana ny Logo na Anaran'ny Marina (Brand)
+    Create_other_Element_text(navId, "h2", brandName, "id", "nav-brand");
+    Set_Attribut("nav-brand", "style", "margin: 0; font-size: 1.5rem; color: #f4df00;");
+
+    // Fametrahana ireo Rohy (Links) ao anaty Navigateur
+    const ulId = "nav-links-list";
+    Create_other_Element(navId, "ul", "id", ulId);
+    Set_Attribut(ulId, "style", "list-style: none; display: flex; gap: 20px; margin: 0; padding: 0;");
+
+    links.forEach((link, index) => {
+        const liId = `nav-item-${index}`;
+        const aId = `nav-link-${index}`;
+        
+        Create_other_Element(ulId, "li", "id", liId);
+        Create_other_Element_text(liId, "a", link.text, "id", aId);
+        Set_Attribut(aId, "href", link.url);
+        Set_Attribut(aId, "style", "color: #fff; text-decoration: none; font-weight: bold;");
+    });
+}
+function create_section(parentId, sectionId, titleText, descriptionText) {
+    // Mamorona ilay Section lehibe
+    Create_other_Element(parentId, "section", "id", sectionId);
+    Set_Attribut(sectionId, "style", "padding: 40px 20px; max-width: 900px; margin: auto;");
+
+    // Lohatenin'ny Section
+    const titleId = `${sectionId}-title`;
+    Create_other_Element_text(sectionId, "h2", titleText, "id", titleId);
+    Set_Attribut(titleId, "style", "font-size: 2rem; color: #2639b8; margin-bottom: 15px; border-bottom: 3px solid #26d53b; display: inline-block; padding-bottom: 5px;");
+
+    // Famaritana na votoatin'ny Section
+    const descId = `${sectionId}-desc`;
+    Create_other_Element_text(sectionId, "p", descriptionText, "id", descId);
+    Set_Attribut(descId, "style", "font-size: 1.1rem; line-height: 1.6; color: #333;");
+}
+/*
+ * JASPY-Web Portfolio — static/js/portfolio.js
+ * In JASPY.py, render this page with page="portfolio".
+ */
+
+function Model_portfolio(
+  name,
+  role,
+  location,
+  email,
+  avatar,
+  social = [],
+) {
+  const profile = {
+    name,
+    role,
+    location,
+    email,
+    avatar,
+    social: Array.isArray(social) ? social : [],
+  };
+
+  const navItems = [
+    ["home", "Accueil", "⌂"],
+    ["about", "À propos", "◉"],
+    ["resume", "Parcours", "▤"],
+    ["portfolio", "Portfolio", "▦"],
+    ["services", "Services", "▱"],
+    ["contact", "Contact", "✉"],
+  ];
+
+  const icon = (name) => ({
+    github: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2C6.48 2 2 6.58 2 12.24c0 4.53 2.87 8.37 6.84 9.73.5.1.68-.22.68-.49v-1.9c-2.78.62-3.37-1.22-3.37-1.22-.45-1.18-1.11-1.49-1.11-1.49-.91-.64.07-.63.07-.63 1.01.07 1.54 1.08 1.54 1.08.9 1.57 2.35 1.12 2.92.86.09-.67.35-1.12.64-1.38-2.22-.26-4.56-1.14-4.56-5.08 0-1.12.39-2.03 1.03-2.75-.1-.26-.45-1.31.1-2.73 0 0 .84-.28 2.75 1.05A9.3 9.3 0 0 1 12 6.4c.85 0 1.7.12 2.5.35 1.9-1.33 2.74-1.05 2.74-1.05.55 1.42.2 2.47.1 2.73.65.72 1.03 1.63 1.03 2.75 0 3.95-2.35 4.81-4.59 5.06.36.32.68.94.68 1.9v2.82c0 .27.18.6.69.49A10.3 10.3 0 0 0 22 12.24C22 6.58 17.52 2 12 2Z"/></svg>',
+    linkedin: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5.2 3.5a1.8 1.8 0 1 1 0 3.6 1.8 1.8 0 0 1 0-3.6ZM3.7 8.4h3v12.1h-3V8.4Zm4.9 0h2.9V10c.4-.8 1.5-1.9 3.3-1.9 3.2 0 3.8 2.1 3.8 4.9v7.5h-3v-6.7c0-1.6 0-3.6-2.2-3.6s-2.5 1.7-2.5 3.5v6.8h-3V8.4Z"/></svg>',
+    instagram: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7.3 2h9.4A5.3 5.3 0 0 1 22 7.3v9.4a5.3 5.3 0 0 1-5.3 5.3H7.3A5.3 5.3 0 0 1 2 16.7V7.3A5.3 5.3 0 0 1 7.3 2Zm-.2 2A3.1 3.1 0 0 0 4 7.1v9.8A3.1 3.1 0 0 0 7.1 20h9.8a3.1 3.1 0 0 0 3.1-3.1V7.1A3.1 3.1 0 0 0 16.9 4H7.1Zm10.8 1.5a1.2 1.2 0 1 1 0 2.4 1.2 1.2 0 0 1 0-2.4ZM12 6.8a5.2 5.2 0 1 1 0 10.4 5.2 5.2 0 0 1 0-10.4Zm0 2a3.2 3.2 0 1 0 0 6.4 3.2 3.2 0 0 0 0-6.4Z"/></svg>',
+  }[name] || "");
+
+  const app = document.getElementById("root");
+  if (!app) return;
+
+  app.innerHTML = `
+    <a class="skip-link" href="#main">Aller au contenu</a>
+    <button class="mobile-menu" type="button" aria-label="Ouvrir le menu" aria-expanded="false">☰</button>
+    <aside class="sidebar" aria-label="Navigation principale">
+      <div class="identity">
+        <img class="avatar" src="${profile.avatar}" alt="Portrait de ${profile.name}">
+        <h1>${profile.name}</h1>
+        <p>${profile.role}</p>
+        <div class="socials">${profile.social.map((item) => `<a href="${item.url}" target="_blank" rel="noreferrer" aria-label="${item.label}">${icon(item.icon)}</a>`).join("")}</div>
+      </div>
+      <nav>${navItems.map(([id, label, glyph], index) => `<a class="nav-link${index === 0 ? " active" : ""}" href="#${id}" data-target="${id}"><span>${glyph}</span>${label}</a>`).join("")}</nav>
+      <footer><strong>© ${new Date().getFullYear()} ${profile.name}</strong><br><span>Créé avec JASPY-Web</span></footer>
+    </aside>
+
+    <main id="main">
+      <section id="home" class="hero section">
+        <p class="eyebrow">Bienvenue dans mon univers</p>
+        <h2>Je crée des expériences <em>web utiles</em> et élégantes.</h2>
+        <p class="lead">Développeur passionné par Python, JavaScript et les interfaces qui transforment une idée en produit clair et performant.</p>
+        <div class="actions"><a class="button primary" href="#portfolio">Voir mes projets</a><a class="button secondary" href="#contact">Me contacter</a></div>
+      </section>
+
+      <section id="about" class="section split"><div><p class="eyebrow">À propos</p><h2>Construire avec intention.</h2></div><p>Je conçois des applications web accessibles, rapides et faciles à maintenir. Mon approche unit une interface soignée avec une logique serveur robuste, de la première maquette jusqu’au déploiement.</p></section>
+
+      <section id="resume" class="section"><p class="eyebrow">Parcours</p><h2>Compétences essentielles</h2><div class="skills"><article><strong>Frontend</strong><span>JavaScript · HTML5 · CSS3 · Responsive UI</span></article><article><strong>Backend</strong><span>Python · Flask · APIs REST · Architecture web</span></article><article><strong>Qualité</strong><span>Git · Documentation · Performance · Accessibilité</span></article></div></section>
+
+      <section id="portfolio" class="section"><p class="eyebrow">Portfolio</p><h2>Quelques réalisations</h2><div class="projects"><article class="project"><span>01</span><h3>JASPY-Web</h3><p>Fondation web qui relie JavaScript et Flask dans une architecture simple et extensible.</p><a href="https://github.com/andotiana4/JASPY-Web" target="_blank" rel="noreferrer">Voir le projet ↗</a></article><article class="project muted"><span>02</span><h3>Votre prochain projet</h3><p>Ajoutez ici une étude de cas, une image et le lien vers votre dépôt ou démo.</p></article></div></section>
+
+      <section id="services" class="section"><p class="eyebrow">Services</p><h2>De l’idée au produit.</h2><div class="services"><article><h3>Sites web</h3><p>Présence en ligne moderne, responsive et adaptée à votre identité.</p></article><article><h3>Applications Flask</h3><p>Backends Python structurés, routes claires et intégration frontend.</p></article><article><h3>Interfaces UI</h3><p>Tableaux de bord et interfaces pensées pour être simples à utiliser.</p></article></div></section>
+
+      <section id="contact" class="section contact"><p class="eyebrow">Contact</p><h2>Un projet à réaliser ?</h2><p>Écrivez-moi pour discuter de votre idée et définir une solution adaptée.</p><a class="button primary" href="mailto:${profile.email}">Envoyer un e-mail</a></section>
+    </main>`;
+
+  const style = document.createElement("style");
+  style.textContent = `
+    :root{--ink:#073243;--navy:#042d3d;--blue:#069bd8;--mint:#45be58;--paper:#f7fafb;--muted:#61727a;--line:#dfe9ec}*{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;background:var(--paper);color:var(--ink);font:16px/1.65 Inter,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}.skip-link{position:absolute;left:-999px}.skip-link:focus{left:1rem;top:1rem;z-index:9;background:#fff;padding:.6rem 1rem}.sidebar{position:fixed;inset:0 auto 0 0;width:300px;display:flex;flex-direction:column;padding:3.2rem 2rem 1.5rem;background:var(--navy);color:#eaf7fb}.identity{text-align:center}.avatar{width:118px;height:118px;object-fit:cover;border-radius:50%;border:7px solid rgba(78,186,86,.32);background:#dcebef}.identity h1{margin:1rem 0 0;font-size:1.55rem;line-height:1.15}.identity p{margin:.3rem 0 1rem;color:#a9c3cb;font-size:.88rem}.socials{display:flex;justify-content:center;gap:.6rem}.socials a{display:grid;place-items:center;width:36px;height:36px;border-radius:50%;background:rgba(255,255,255,.08);color:white;transition:.2s}.socials a:hover{background:var(--blue);transform:translateY(-2px)}.socials svg{width:18px;fill:currentColor}nav{display:grid;gap:.45rem;margin-top:2.6rem}.nav-link{display:flex;align-items:center;gap:1rem;padding:.75rem .85rem;border-radius:.6rem;color:#c2d4da;text-decoration:none;font-size:.94rem;transition:.2s}.nav-link span{color:var(--mint);font-size:1.3rem;width:1.25rem;text-align:center}.nav-link:hover,.nav-link.active{background:rgba(255,255,255,.08);color:#fff}.nav-link.active span{color:#20b8f1}footer{margin-top:auto;text-align:center;color:#d4e3e8;font-size:.78rem}footer span{color:#7fa3ae}.mobile-menu{display:none}main{margin-left:300px;min-height:100vh}.section{max-width:1120px;margin:auto;padding:7rem 7vw;border-bottom:1px solid var(--line)}.hero{min-height:100vh;display:flex;flex-direction:column;justify-content:center;background:radial-gradient(circle at 85% 15%,#dff5ff 0,transparent 28%)}.eyebrow{margin:0 0:.75rem;text-transform:uppercase;letter-spacing:.15em;color:#0d91c7;font-size:.72rem;font-weight:800}.section h2{margin:0;color:var(--ink);font-size:clamp(2rem,4.5vw,4.5rem);line-height:1.06;letter-spacing:-.045em}.hero h2{max-width:760px}.hero em{font-style:normal;color:#078fc7}.lead{max-width:640px;color:var(--muted);font-size:1.15rem}.actions{display:flex;flex-wrap:wrap;gap:.75rem;margin-top:1.2rem}.button{display:inline-flex;align-items:center;justify-content:center;padding:.78rem 1.15rem;border-radius:.5rem;text-decoration:none;font-weight:750;transition:.2s}.button.primary{background:var(--ink);color:#fff}.button.primary:hover{background:#087eae;transform:translateY(-2px)}.button.secondary{border:1px solid #a9c3cc;color:var(--ink)}.split{display:grid;grid-template-columns:1fr 1fr;gap:4rem;align-items:start}.split>p{margin:0;color:var(--muted);font-size:1.12rem}.skills,.services,.projects{display:grid;grid-template-columns:repeat(3,1fr);gap:1rem;margin-top:2.5rem}.skills article,.services article,.project{padding:1.5rem;border:1px solid var(--line);border-radius:.85rem;background:#fff}.skills strong{display:block;margin-bottom:.45rem;font-size:1.05rem}.skills span,.services p,.project p{color:var(--muted)}.services h3,.project h3{margin:.1rem 0 .45rem}.projects{grid-template-columns:repeat(2,1fr)}.project span{color:#0d91c7;font-weight:800}.project a{color:#007caf;font-weight:750;text-decoration:none}.project.muted{background:#edf5f7;border-style:dashed}.contact{background:var(--ink);color:#e6f5fa}.contact h2{color:white;max-width:640px}.contact p:not(.eyebrow){max-width:550px;color:#c4dde5}.contact .primary{background:#42bb5a}@media(max-width:820px){.sidebar{z-index:5;transform:translateX(-100%);transition:.25s;width:min(300px,82vw)}body.menu-open .sidebar{transform:translateX(0)}.mobile-menu{display:block;position:fixed;z-index:6;right:1rem;top:1rem;border:0;border-radius:.55rem;background:var(--ink);color:white;padding:.55rem .75rem;font-size:1.25rem}main{margin-left:0}.section{padding:5rem 7vw}.hero{min-height:92vh}.split,.skills,.services,.projects{grid-template-columns:1fr}.section h2{font-size:clamp(2rem,10vw,3.2rem)}}`;
+  document.head.appendChild(style);
+
+  const menu = document.querySelector(".mobile-menu");
+  menu.addEventListener("click", () => {
+    const open = document.body.classList.toggle("menu-open");
+    menu.setAttribute("aria-expanded", String(open));
+  });
+
+  document.querySelectorAll(".nav-link").forEach((link) => {
+    link.addEventListener("click", () => {
+      document.querySelectorAll(".nav-link").forEach((item) => item.classList.remove("active"));
+      link.classList.add("active");
+      document.body.classList.remove("menu-open");
+      menu.setAttribute("aria-expanded", "false");
+    });
+  });
+}
 
 // ohatra
 // Create_Element_after_root('h1', 'id', 'para');
