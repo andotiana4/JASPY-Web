@@ -145,10 +145,7 @@ communicate with backend endpoints.
 
 ### 🔗 Frontend and Backend Integration
 
-The project provides a foundation for connecting browser-based
-functionality with Python server-side logic. Depending on the
-implemented endpoints, this communication can use regular HTTP requests
-or JavaScript Fetch API calls.
+The current repository contains the Flask home route and browser-side JavaScript helpers. API communication can be added through Flask routes and browser requests, but additional API endpoints should not be assumed to exist unless they are implemented in the code.
 
 ### 🧩 Extensible Project Structure
 
@@ -245,77 +242,141 @@ to exist until implemented.
 
 ## 📁 Project Structure
 
-The following is an example of a possible project layout:
+The following structure shows the main files involved in the current application. Other assets and vendor files may also exist in the repository.
 
-``` text
+```text
 JASPY-Web/
 ├── JASPY.py
 ├── requirements.txt
 ├── README.md
-├── .gitignore
 ├── templates/
-│   └── index.html
+│   └── index.html                 # PROTECTED — do not modify
 └── static/
     ├── css/
+    │   └── jaspy.css
+    ├── img/
+    │   └── favicon.png
     ├── js/
-    └── img/
+    │   ├── index.js               # Home-page entry script
+    │   └── jaspy.js               # Typed-text behavior
+    ├── src/                       # PROTECTED — do not modify anything here
+    │   └── jaspy/
+    │       ├── head.js
+    │       ├── main.js
+    │       ├── jaspy.js
+    │       └── jaspy.png
+    └── vendor/
+        ├── aos/
+        └── typed.js/
 ```
 
-The actual repository structure may differ. Keep the filenames and
-directories in this documentation synchronized with the files that exist
-in the project.
+This is a guide to the main paths, not a guarantee that every listed asset is present in every checkout. Check the repository when a particular asset is needed.
 
 ### Important Files
 
--   **`JASPY.py`** --- The main Python application entry point. It
-    initializes Flask and defines the routes implemented in the
-    application.
--   **`requirements.txt`** --- Lists the Python packages required by the
-    project.
--   **`templates/`** --- Contains HTML templates rendered by Flask.
--   **`static/js/index.js`** --- The main JavaScript file for defining
-    reusable functions used by the JASPY-Web frontend. Place the
-    JavaScript functions you want to load and use in the application here.
-    For example, functions that create or configure interface elements
-    can be defined in this file and then loaded by an HTML template.
--   **`static/`** --- Stores static resources such as CSS, JavaScript,
-    and images.
--   **`README.md`** --- Provides project information, installation
-    instructions, and development documentation.
--   **`.gitignore`** --- Specifies files and directories that Git should
-    ignore, including local virtual environments and generated cache
-    files.
+- **`JASPY.py`** — Flask application entry point. The current code defines the `/` route, renders `templates/index.html`, passes `page="index"`, and starts the development server on port `8080` with debug mode enabled.
+- **`requirements.txt`** — Currently lists Flask and Gunicorn.
+- **`templates/index.html`** — The fixed HTML template that loads the protected JavaScript bootstrap and then loads the page script. **Do not modify this file.**
+- **`static/src/`** — Protected source directory containing the existing JASPY helper functions and bootstrap scripts. **Do not edit, rename, move, or delete any file or folder inside this directory.**
+- **`static/js/index.js`** — The current home-page entry script. It currently calls `Jaspy()`. Preserve this call when adding home-page behavior.
+- **`static/js/jaspy.js`** — A separate page script that uses Typed.js to display text from a `.soratana` element's `data-soratra` attribute. This is not the same file as `static/src/jaspy/jaspy.js`.
+- **`static/css/`** — Stylesheets served to the browser.
+- **`static/vendor/`** — Third-party frontend assets used by the project.
+- **`README.md`** — Project documentation.
 
-### Defining and Loading JavaScript Functions
+## 🛑 Protected Files — Do Not Modify
 
-Put the JavaScript function definitions in **`static/js/index.js`**. To
-make the browser load that file, include it in the HTML template that
-needs those functions, typically just before the closing `</body>` tag:
+The project has two protected areas. Their code must remain unchanged:
 
-```html
-<script src="{{ url_for('static', filename='js/index.js') }}"></script>
-</body>
-```
+1. **`templates/index.html`** — Do not edit, replace, rename, move, or delete this template.
+2. **Everything inside `static/src/`** — Do not edit, replace, rename, move, or delete any file or subdirectory in this folder. This includes `static/src/jaspy/head.js`, `static/src/jaspy/main.js`, `static/src/jaspy/jaspy.js`, images, and any other current or future files under `static/src/`.
 
-For example, if `index.js` contains:
+These files form the existing application bootstrap and contain helper functions used by the project. Use the available functions from page-specific scripts instead of changing their definitions.
+
+### Where to put new code
+
+- Put home-page-specific JavaScript in **`static/js/index.js`**.
+- Preserve the existing `Jaspy();` startup call in `static/js/index.js`; add new page-specific code without removing or replacing it.
+- Other page scripts may be placed under `static/js/` when a corresponding Flask route passes the correct page name to the template.
+- Put styles in `static/css/` where possible.
+- Put server-side logic in `JASPY.py` or another Python module imported by the Flask application.
+
+Do not copy protected helper functions into `index.js` just to change their implementation. If a helper needs different behavior, implement page-specific behavior around it or document the proposed change separately; do not edit the protected source files.
+
+## 🔄 How It Works
+
+The current application flow is:
+
+1. A visitor opens the application in a browser.
+2. Flask handles the `/` route in `JASPY.py`.
+3. Flask renders `templates/index.html` and passes `page="index"`.
+4. The template loads `static/src/jaspy/head.js` and `static/src/jaspy/main.js`.
+5. The template creates a script element for `static/js/index.js` using the `page` value supplied by Flask.
+6. `static/js/index.js` calls `Jaspy()`, a function defined in the protected `static/src/jaspy/main.js` file.
+7. The JASPY scripts create the initial interface and load additional page behavior.
+
+The template and `static/src/` files are the fixed bootstrap for this project. Keep them unchanged when adding features.
+
+## 🧩 JavaScript Functions and Page Scripts
+
+### Existing helper functions
+
+The protected `static/src/jaspy/main.js` currently defines DOM helpers and interface functions, including:
+
+- `Create_Element_simple_after_root()`
+- `Create_Element_text_after_root()`
+- `Create_Element_after_root()`
+- `Create_other_Element()`
+- `Create_other_Element_text()`
+- `Set_Attribut()`
+- `Add_Text()`
+- `Add_ClassById()` and `Add_ClassByTag()`
+- `Jaspy()`
+- `create_landing_page()`
+- `create_portfolio()`
+- `create_business_website()`
+- `create_navigator()`
+- `create_section()`
+- `Model_portfolio()`
+- `export_website()`
+
+These functions are already defined in the protected source directory. Call them from page scripts when appropriate; do not modify their definitions.
+
+### `static/js/index.js`
+
+At present, the home-page entry script contains:
 
 ```javascript
-function helloJaspy() {
-  console.log("JASPY-Web is ready!");
-}
+Jaspy();
 ```
 
-the function is defined when the browser loads `index.js`. You can then
-call `helloJaspy()` from other frontend JavaScript code or from an
-appropriate browser event.
+Keep this startup call. New home-page functions or calls can be added to this file, provided the existing startup behavior is preserved and the functions are called only when their required DOM elements and arguments are available.
 
-**Important:** `static/js/index.js` is a browser-side JavaScript file; it
-is not executed directly by the Python server. Flask serves the file to
-the browser, and the browser executes it. If you mean a function that
-must run on the server itself, define that logic in Python in `JASPY.py`
-(or another Python module imported by the Flask application), then expose
-it through a Flask route or API endpoint when the browser needs to
-request its result.
+For example, a separate function can be added as follows:
+
+```javascript
+function showWelcomeMessage() {
+    console.log("Welcome to JASPY-Web!");
+}
+
+// Keep the existing JASPY startup call.
+Jaspy();
+
+// Example page-specific behavior.
+showWelcomeMessage();
+```
+
+This is only an example; it does not replace the current project code. When using a helper such as `create_navigator()`, ensure that its container element exists and pass the required arguments.
+
+### `static/js/jaspy.js`
+
+This separate script reads the `data-soratra` attribute from an element with the `.soratana` class and uses Typed.js to animate the text. Do not confuse it with the protected `static/src/jaspy/jaspy.js` file.
+
+### Browser JavaScript and server-side Python
+
+Files under `static/js/` run in the visitor's browser. Flask serves those files; it does not execute their ordinary JavaScript functions on the Python server.
+
+Server-side logic belongs in `JASPY.py` or another Python module imported by the Flask application. If browser code needs server-side data, add a Flask route or API endpoint and request it from JavaScript. The current `JASPY.py` defines only the `/` route, so additional API routes should not be assumed to exist.
 
 ## 💻 Requirements
 
@@ -396,23 +457,19 @@ only the dependencies required by the current application and update
 
 ## ▶️ Running the Application
 
-After installing the dependencies, run:
+Install the dependencies, then run:
 
-``` bash
+```bash
 python JASPY.py
 ```
 
-If the application is configured to listen on port `8080`, open the
-following address in your browser:
+The current `JASPY.py` configures Flask to use port `8080`. Open this address in your browser:
 
+```text
 http://127.0.0.1:8080
+```
 
-The address and port must match the configuration in the actual
-application.
-
-For local development, Flask's development server may be sufficient. A
-production deployment should use an appropriate production server and
-deployment configuration.
+The current code enables `debug=True`, which is intended only for local development. Do not expose Flask's debug server to the public internet or use debug mode in production.
 
 ## 🔌 Frontend and Backend Communication
 
@@ -491,7 +548,9 @@ To keep the project maintainable:
 
 -   Use meaningful variable and function names.
 -   Keep functions focused on specific responsibilities.
--   Separate templates, static assets, and backend logic.
+-   Separate static assets and backend logic where possible.
+-   Do not modify `templates/index.html` or anything inside `static/src/`.
+-   Preserve the `Jaspy();` startup call in `static/js/index.js`.
 -   Avoid duplicating code unnecessarily.
 -   Validate user input on the server.
 -   Handle errors consistently.
@@ -528,8 +587,7 @@ and that the filename matches the name used in `render_template()`.
 
 ### Static Files Are Missing
 
-Verify that CSS, JavaScript, and image files are stored in the correct
-locations under `static/` and that their URLs are referenced correctly.
+Verify that CSS, JavaScript, and image files exist at the paths referenced by the application. Do not edit `templates/index.html` or files under `static/src/` to work around a missing asset; first check the path and the page-specific files under `static/js/` or `static/css/`.
 
 ### The Local Address Does Not Open
 
@@ -573,7 +631,10 @@ If you want to contribute:
 6.  Open a pull request describing your contribution.
 
 Please keep contributions focused, explain important changes, and
-include relevant testing information when possible.
+include relevant testing information when possible. Contributions must
+respect the protected-file rule: do not modify `templates/index.html` or
+any file or folder inside `static/src/`. Preserve the `Jaspy();` call in
+`static/js/index.js`.
 
 ## 🔐 Security
 
