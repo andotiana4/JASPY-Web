@@ -273,6 +273,11 @@ in the project.
 -   **`requirements.txt`** --- Lists the Python packages required by the
     project.
 -   **`templates/`** --- Contains HTML templates rendered by Flask.
+-   **`static/js/index.js`** --- The main JavaScript file for defining
+    reusable functions used by the JASPY-Web frontend. Place the
+    JavaScript functions you want to load and use in the application here.
+    For example, functions that create or configure interface elements
+    can be defined in this file and then loaded by an HTML template.
 -   **`static/`** --- Stores static resources such as CSS, JavaScript,
     and images.
 -   **`README.md`** --- Provides project information, installation
@@ -280,6 +285,37 @@ in the project.
 -   **`.gitignore`** --- Specifies files and directories that Git should
     ignore, including local virtual environments and generated cache
     files.
+
+### Defining and Loading JavaScript Functions
+
+Put the JavaScript function definitions in **`static/js/index.js`**. To
+make the browser load that file, include it in the HTML template that
+needs those functions, typically just before the closing `</body>` tag:
+
+```html
+<script src="{{ url_for('static', filename='js/index.js') }}"></script>
+</body>
+```
+
+For example, if `index.js` contains:
+
+```javascript
+function helloJaspy() {
+  console.log("JASPY-Web is ready!");
+}
+```
+
+the function is defined when the browser loads `index.js`. You can then
+call `helloJaspy()` from other frontend JavaScript code or from an
+appropriate browser event.
+
+**Important:** `static/js/index.js` is a browser-side JavaScript file; it
+is not executed directly by the Python server. Flask serves the file to
+the browser, and the browser executes it. If you mean a function that
+must run on the server itself, define that logic in Python in `JASPY.py`
+(or another Python module imported by the Flask application), then expose
+it through a Flask route or API endpoint when the browser needs to
+request its result.
 
 ## 💻 Requirements
 
