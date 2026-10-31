@@ -4,7 +4,6 @@ icon('static/img/favicon.png');
 link('/static/css/jaspy.css');
 
 Create_Element_after_root('img', 'src', 'static/src/jaspy/jaspy.png');
-
 Add_IdByTag('img', 0, 'image-jaspy');
 Set_Attribut('image-jaspy',  'width', '500');
 Set_Attribut('image-jaspy',  'height', '500');
